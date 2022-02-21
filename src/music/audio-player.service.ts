@@ -1,11 +1,11 @@
-import { IAudioAPI, IAudioPlayerService } from "../typedefs/music";
+import { IAudioAPI, IAudioPlayerService } from "../common/typedefs/music";
 import {
   AudioPlayer,
   AudioPlayerStatus,
   AudioResource,
   VoiceConnectionStatus,
 } from "@discordjs/voice";
-import { IConnectionService } from "../typedefs/connection";
+import { IConnectionService } from "../common/typedefs/connection";
 
 export class AudioPlayerService implements IAudioPlayerService {
   constructor(

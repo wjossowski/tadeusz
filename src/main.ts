@@ -1,15 +1,15 @@
-import config from "./utils/config";
+import config from "@common/config/config";
 import mongoose from "mongoose";
-import { DBConnectionError } from "./errors/db.errors";
-
-const { Client, Intents } = require("discord.js");
-const {
+import { DBConnectionError } from "./common/errors/db.errors";
+import { Client, Intents } from "discord.js";
+import { helloInteractor } from "./hello";
+import { appExit, onKill } from "./common/utils/exit";
+import { connectionService } from "@common/infrastructure/providers/discord";
+import {
   slashCommandRepository,
-  slashCommandsController,
-} = require("./slash-commands");
-const { helloController } = require("./hello");
-const { connectionService } = require("./connection");
-const { appExit, onKill } = require("./utils/exit");
+  slashCommandsInteractor,
+} from "@common/infrastructure/providers/discord/slash-commands";
+import { SlashCommandPublisher } from "@common/infrastructure/providers/discord/slash-commands/slash-commands.publisher";
 
 async function main() {
   try {
@@ -32,16 +32,16 @@ async function main() {
 
   connectionService.client = client;
 
-  await slashCommandRepository.deploy();
+  await new SlashCommandPublisher(slashCommandRepository).deploy();
 
   // Create controllers
-  helloController({
+  helloInteractor({
     client,
     mode: "once",
     event: "ready",
   });
 
-  slashCommandsController({
+  slashCommandsInteractor({
     client,
     mode: "on",
     event: "interactionCreate",

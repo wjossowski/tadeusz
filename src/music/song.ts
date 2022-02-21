@@ -1,4 +1,4 @@
-import { PrivateYoutubeVideoError } from "../errors/music.errors";
+import { PrivateYoutubeVideoError } from "../common/errors/music.errors";
 import { MoreVideoDetails } from "ytdl-core";
 import { YoutubeLink } from "./youtube-link";
 

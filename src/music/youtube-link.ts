@@ -1,5 +1,5 @@
+import { InvalidYoutubeLinkError } from "@common/errors/music.errors";
 import ytdl from "ytdl-core-discord";
-import { InvalidYoutubeLinkError } from "../errors/music.errors";
 
 export class YoutubeLink {
   readonly value: string;

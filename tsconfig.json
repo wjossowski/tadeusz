@@ -3,14 +3,18 @@
   "noImplicitReturns": true,
   "strict": true,
   "noUnusedLocals": true,
-
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES6",
     "sourceMap": true,
     "module": "commonjs",
     "outDir": "dist",
+    "baseUrl": "./",
     "experimentalDecorators": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "@common/*": ["src/common/*"],
+      "@music/*": ["src/music/*"]
+    }
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "src/__test__"]

@@ -1,7 +1,7 @@
-import { HelloController } from "./hello.controller";
-import { IControllerConfig } from "../utils/controller";
-import { ControllerFactory } from "../typedefs/common";
+import { HelloInteractor } from "./hello.interactor";
+import { IInteractorConfig } from "../common/utils/interactor";
+import { InteractorFactory } from "../common/typedefs/common";
 
-export const helloController: ControllerFactory<HelloController> = (
-  props: IControllerConfig
-) => new HelloController(props);
+export const helloInteractor: InteractorFactory<HelloInteractor> = (
+  props: IInteractorConfig
+) => new HelloInteractor(props);

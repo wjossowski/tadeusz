@@ -1,16 +1,19 @@
 import { YoutubeLink } from "./youtube-link";
 import { Song } from "./song";
 import { AudioPlayerStatus, createAudioResource } from "@discordjs/voice";
-import { bold, underline } from "../utils/markdown";
-import { NoMusicError, YoutubeDownloadError } from "../errors/music.errors";
-import { IMessagingService } from "../typedefs/discord";
+import {
+  NoMusicError,
+  YoutubeDownloadError,
+} from "../common/errors/music.errors";
+import { IMessagingService } from "../common/typedefs/discord";
 import {
   IAudioPlayerService,
   IMusicPlayerService,
   IMusicQueueService,
   IYoutubeService,
-} from "../typedefs/music";
-import { IConnectionService } from "../typedefs/connection";
+} from "../common/typedefs/music";
+import { IConnectionService } from "../common/typedefs/connection";
+import { bold, underline } from "@common/presenters/markdown";
 
 export class MusicPlayerService implements IMusicPlayerService {
   private currentSong: Song;

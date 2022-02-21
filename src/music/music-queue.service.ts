@@ -1,7 +1,7 @@
 import { Song } from "./song";
 import { songFactory } from "./song.factory";
 import { SongEntity } from "./song.entity";
-import { IMusicQueueService } from "../typedefs/music";
+import { IMusicQueueService } from "../common/typedefs/music";
 
 export class MusicQueueService implements IMusicQueueService {
   async getQueue(): Promise<Song[]> {

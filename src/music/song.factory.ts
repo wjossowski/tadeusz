@@ -1,7 +1,7 @@
 import { Song } from "./song";
 import { ISongSchema, SongEntity } from "./song.entity";
 import { YoutubeLink } from "./youtube-link";
-import { SchemaModelFactory } from "../abstracts/schema-model-factory";
+import { SchemaModelFactory } from "./schema-model-factory";
 
 class SongFactory extends SchemaModelFactory<ISongSchema, Song> {
   fromModel(song: Song) {
