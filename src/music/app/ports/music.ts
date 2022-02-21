@@ -19,7 +19,7 @@ export interface IAudioAPI {
   get state(): AudioPlayerState;
 }
 
-export interface IAudioPlayerService {
+export interface IAudioPlayer {
   ensureVoiceChatConnection: () => void;
   handleStatusChange: (status: any, listener: any) => void;
   play: (resource: AudioResource<unknown>) => void;
@@ -28,7 +28,7 @@ export interface IAudioPlayerService {
   status: () => AudioPlayerStatus;
 }
 
-export interface IYoutubeService {
+export interface IStreamingSource {
   getInfo: (url: string) => Promise<SongDetails | null>;
   download: (song: Song) => Promise<Readable>;
 }

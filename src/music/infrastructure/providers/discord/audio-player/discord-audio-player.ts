@@ -1,4 +1,4 @@
-import { IAudioAPI, IAudioPlayerService } from "@music/app/ports/music";
+import { IAudioAPI, IAudioPlayer } from "@music/app/ports/music";
 import {
   AudioPlayer,
   AudioPlayerStatus,
@@ -7,7 +7,7 @@ import {
 } from "@discordjs/voice";
 import { IDiscordConnection } from "@common/typedefs/connection";
 
-export class DiscordAudioPlayer implements IAudioPlayerService {
+export class DiscordAudioPlayer implements IAudioPlayer {
   constructor(
     private readonly discordConnection: IDiscordConnection,
     private readonly audioApi: IAudioAPI

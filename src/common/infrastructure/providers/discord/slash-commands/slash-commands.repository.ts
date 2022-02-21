@@ -1,7 +1,7 @@
 import { SlashCommand } from "./abstract-slash-command";
 import { IsClass } from "@common/typedefs/helpers";
 
-export class SlashCommandRepository {
+export class SlashCommandRegistry {
   private readonly commands = new Map();
 
   public getRawCommands() {

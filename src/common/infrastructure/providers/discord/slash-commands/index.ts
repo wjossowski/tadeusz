@@ -1,11 +1,11 @@
-import { SlashCommandRepository } from "./slash-commands.repository";
+import { SlashCommandRegistry } from "./slash-commands.repository";
 import { SlashCommandsInteractor } from "./slash-commands.interactor";
 import { IInteractorConfig, InteractorFactory } from "@common/utils/interactor";
 import { discordConnection } from "..";
 import { messagingService } from "../messaging";
 
 // Repositories
-export const slashCommandRepository = new SlashCommandRepository();
+export const slashCommandRepository = new SlashCommandRegistry();
 
 // Interactors
 export const slashCommandsInteractor: InteractorFactory<SlashCommandsInteractor> =

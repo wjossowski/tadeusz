@@ -3,7 +3,7 @@ import { discordConnection } from "../common/infrastructure/providers/discord";
 import { MongoSongQueue } from "./infrastructure/repositories/mongo/mongo-song-queue";
 import { DiscordAudioPlayer } from "./infrastructure/providers/discord/audio-player/discord-audio-player";
 import { createAudioPlayer } from "@discordjs/voice";
-import { IAudioAPI } from "./app/ports/music";
+import { IAudioAPI, IAudioPlayer, IStreamingSource } from "./app/ports/music";
 import { messagingService } from "@common/infrastructure/providers/discord/messaging";
 import { slashCommandRepository } from "@common/infrastructure/providers/discord/slash-commands";
 import { GetMusicQueueCommand } from "./infrastructure/providers/discord/slash-commands/get-music-queue.command";
@@ -12,31 +12,41 @@ import { PauseCommand } from "./infrastructure/providers/discord/slash-commands/
 import { PlayCommand } from "./infrastructure/providers/discord/slash-commands/play.command";
 import { ResumeCommand } from "./infrastructure/providers/discord/slash-commands/resume.command";
 import { SkipCommand } from "./infrastructure/providers/discord/slash-commands/skip.command";
-import { YoutubeService } from "./infrastructure/providers/youtube-dl/youtube.service";
+import { YoutubeStreamingService } from "./infrastructure/providers/youtube-dl/youtube.service";
+import { SlashCommandRegistry } from "@common/infrastructure/providers/discord/slash-commands/slash-commands.repository";
+import { ISongQueue } from "./app/ports/song-queue";
 
-export const youtubeService = new YoutubeService();
+export class MusicModule {
+  constructor(
+    private readonly discordAudioPlayer: IAudioPlayer,
+    private readonly streamingSource: IStreamingSource,
+    private readonly queue: ISongQueue
+  ) {}
 
-export const mongoSongQueue = new MongoSongQueue();
+  public readonly musicPlayerService = new MusicPlayerService(
+    this.streamingSource,
+    discordConnection,
+    messagingService,
+    this.discordAudioPlayer,
+    this.queue
+  );
 
-export const discordAudioPlayer = new DiscordAudioPlayer(
-  discordConnection,
-  createAudioPlayer() as IAudioAPI
+  public setup(slashCommandRepository: SlashCommandRegistry) {
+    slashCommandRepository.add([
+      new PlayCommand(this.musicPlayerService, messagingService),
+      new PauseCommand(this.musicPlayerService, messagingService),
+      new ResumeCommand(this.musicPlayerService, messagingService),
+      new SkipCommand(this.musicPlayerService, messagingService),
+      new GetMusicQueueCommand(this.musicPlayerService, messagingService),
+      new JoinVoiceCommand(this.discordAudioPlayer, this.musicPlayerService),
+    ]);
+
+    return this;
+  }
+}
+
+export const Music = new MusicModule(
+  new DiscordAudioPlayer(discordConnection, createAudioPlayer() as IAudioAPI),
+  new YoutubeStreamingService(),
+  new MongoSongQueue()
 );
-
-export const musicPlayerService = new MusicPlayerService(
-  youtubeService,
-  discordConnection,
-  messagingService,
-  discordAudioPlayer,
-  mongoSongQueue
-);
-
-// Commands
-slashCommandRepository.add([
-  new PlayCommand(musicPlayerService, messagingService),
-  new PauseCommand(musicPlayerService, messagingService),
-  new ResumeCommand(musicPlayerService, messagingService),
-  new SkipCommand(musicPlayerService, messagingService),
-  new GetMusicQueueCommand(musicPlayerService, messagingService),
-  new JoinVoiceCommand(discordAudioPlayer, musicPlayerService),
-]);

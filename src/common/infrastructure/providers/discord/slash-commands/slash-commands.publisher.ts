@@ -1,11 +1,11 @@
 import config from "@common/config/config";
 import { Routes } from "discord-api-types/v9";
-import { SlashCommandRepository } from "./slash-commands.repository";
+import { SlashCommandRegistry } from "./slash-commands.repository";
 
 const { REST } = require("@discordjs/rest");
 
 export class SlashCommandPublisher {
-  constructor(private readonly repository: SlashCommandRepository) {}
+  constructor(private readonly repository: SlashCommandRegistry) {}
 
   /**
    * Deploys command to discord

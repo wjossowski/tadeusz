@@ -5,7 +5,7 @@ import {
   YoutubeDownloadError,
 } from "@common/errors/music.errors";
 import { IMessagingService } from "@common/typedefs/discord";
-import { IAudioPlayerService, IYoutubeService } from "@music/app/ports/music";
+import { IAudioPlayer, IStreamingSource } from "@music/app/ports/music";
 import { IDiscordConnection } from "../../common/typedefs/connection";
 import { bold, underline } from "@common/presenters/markdown";
 import { ISongQueue } from "./ports/song-queue";
@@ -14,10 +14,10 @@ export class MusicPlayerService {
   private currentSong: Song;
 
   constructor(
-    private readonly youtubeService: IYoutubeService,
-    private readonly discordConnection: IDiscordConnection,
+    private readonly streamingSource: IStreamingSource,
+    private readonly discord: IDiscordConnection,
     private readonly messagingService: IMessagingService,
-    private readonly audioPlayerService: IAudioPlayerService,
+    private readonly audioPlayer: IAudioPlayer,
     private readonly songQueue: ISongQueue
   ) {
     /**
@@ -25,20 +25,17 @@ export class MusicPlayerService {
      * played.
      */
 
-    this.audioPlayerService.handleStatusChange(
-      AudioPlayerStatus.Idle,
-      async () => {
-        this.currentSong = null;
-        await this.checkQueue();
-      }
-    );
+    this.audioPlayer.handleStatusChange(AudioPlayerStatus.Idle, async () => {
+      this.currentSong = null;
+      await this.checkQueue();
+    });
   }
 
   async play(link: string): Promise<Song> {
-    const details = await this.youtubeService.getInfo(link);
+    const details = await this.streamingSource.getInfo(link);
     const song = new Song(details);
 
-    this.audioPlayerService.ensureVoiceChatConnection();
+    this.audioPlayer.ensureVoiceChatConnection();
 
     await this.enqueueSong(song);
     return song;
@@ -49,7 +46,7 @@ export class MusicPlayerService {
       throw new NoMusicError("No song is currently being played.");
     }
 
-    return this.audioPlayerService.pause();
+    return this.audioPlayer.pause();
   }
 
   async resume() {
@@ -57,12 +54,12 @@ export class MusicPlayerService {
       throw new NoMusicError("No song is currently being played.");
     }
 
-    this.audioPlayerService.resume();
+    this.audioPlayer.resume();
   }
 
   async skip() {
     if (
-      this.audioPlayerService.status() !== AudioPlayerStatus.Playing ||
+      this.audioPlayer.status() !== AudioPlayerStatus.Playing ||
       !this.currentSong
     ) {
       throw new NoMusicError("No song is currently being played.");
@@ -86,7 +83,7 @@ export class MusicPlayerService {
   private async enqueueSong(song: Song) {
     await this.songQueue.enqueue(song);
 
-    if (this.audioPlayerService.status() === AudioPlayerStatus.Idle) {
+    if (this.audioPlayer.status() === AudioPlayerStatus.Idle) {
       await this.checkQueue();
     }
   }
@@ -97,7 +94,7 @@ export class MusicPlayerService {
    * @private
    */
   private async checkQueue() {
-    const connection = this.discordConnection.getVoiceChatConnection();
+    const connection = this.discord.getVoiceChatConnection();
     const queueLength = await this.songQueue.count();
 
     if (queueLength === 0) {
@@ -106,10 +103,10 @@ export class MusicPlayerService {
 
     try {
       this.currentSong = await this.songQueue.dequeue();
-      const audioFile = await this.youtubeService.download(this.currentSong);
+      const audioFile = await this.streamingSource.download(this.currentSong);
 
       const resource = createAudioResource(audioFile);
-      this.audioPlayerService.play(resource);
+      this.audioPlayer.play(resource);
 
       /**
        * Slightly throttle sending a message to prevent showing first 'Playing" before 'Queued' when

@@ -1,6 +1,6 @@
 import { CommandInteraction, GuildMember } from "discord.js";
 import { Interactor, IInteractorConfig } from "@common/utils/interactor";
-import { SlashCommandRepository } from "./slash-commands.repository";
+import { SlashCommandRegistry } from "./slash-commands.repository";
 import { DiscordConnection } from "../discord-connection";
 import { IMessagingService } from "@common/typedefs/discord";
 import { random as randomEmoji } from "node-emoji";
@@ -8,7 +8,7 @@ import { random as randomEmoji } from "node-emoji";
 export class SlashCommandsInteractor extends Interactor {
   constructor(
     props: IInteractorConfig,
-    private readonly slashCommandRepository: SlashCommandRepository,
+    private readonly slashCommandRepository: SlashCommandRegistry,
     private readonly discordConnection: DiscordConnection,
     private readonly messagingService: IMessagingService
   ) {
