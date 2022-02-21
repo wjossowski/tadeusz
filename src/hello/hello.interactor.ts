@@ -1,10 +1,10 @@
 import {
-  Interactor,
+  AbstractDiscordInteractor,
   IInteractorConfig,
 } from "../common/infrastructure/providers/discord/interactor";
 import { Interaction } from "discord.js";
 
-export class HelloInteractor extends Interactor {
+export class HelloInteractor extends AbstractDiscordInteractor {
   constructor(props: IInteractorConfig) {
     super(props);
   }

@@ -5,8 +5,8 @@ import {
   bold,
 } from "@common/infrastructure/providers/discord/markdown";
 import { IChat } from "@common/typedefs/chat";
-import { UNKNOWN_ERROR_CHAT_MESSAGE } from "@common/infrastructure/providers/discord/messaging/fallback";
-import { MusicPlayerService } from "@music/app/music-player.service";
+import { UNKNOWN_ERROR_CHAT_MESSAGE } from "@common/infrastructure/providers/discord/chat/fallback";
+import { MusicService } from "@music/app/music.service";
 
 export class PlayCommand extends SlashCommand {
   private readonly errorMap = {
@@ -15,7 +15,7 @@ export class PlayCommand extends SlashCommand {
   };
 
   constructor(
-    private readonly musicPlayerService: MusicPlayerService,
+    private readonly musicPlayerService: MusicService,
     private readonly chat: IChat
   ) {
     super({

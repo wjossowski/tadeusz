@@ -1,21 +1,20 @@
 import { Song } from "../domain/song";
-import { AudioPlayerStatus, createAudioResource } from "@discordjs/voice";
+import { AudioPlayerStatus } from "@discordjs/voice";
 import {
   NoMusicError,
   YoutubeDownloadError,
 } from "@common/errors/music.errors";
 import { IChat } from "@common/typedefs/chat";
-import { IAudioPlayer, IStreamingSource } from "@music/app/ports/music";
-import { IDiscordConnection } from "../../common/typedefs/discord-connection";
 import {
   bold,
   underline,
 } from "@common/infrastructure/providers/discord/markdown";
 import { ISongQueue } from "./ports/song-queue";
+import { IStreamingSource } from "./ports/streaming-source";
+import { IAudioPlayer } from "./ports/audio-player";
+import { IDiscordConnection } from "@common/typedefs/discord-connection";
 
-export class MusicPlayerService {
-  private currentSong: Song;
-
+export class MusicService {
   constructor(
     private readonly streamingSource: IStreamingSource,
     private readonly discord: IDiscordConnection,
@@ -23,13 +22,7 @@ export class MusicPlayerService {
     private readonly audioPlayer: IAudioPlayer,
     private readonly songQueue: ISongQueue
   ) {
-    /**
-     * Idle state event callback only starts after something was already
-     * played.
-     */
-
     this.audioPlayer.handleStatusChange(AudioPlayerStatus.Idle, async () => {
-      this.currentSong = null;
       await this.checkQueue();
     });
   }
@@ -37,37 +30,22 @@ export class MusicPlayerService {
   async play(link: string): Promise<Song> {
     const details = await this.streamingSource.getInfo(link);
     const song = new Song(details);
-
-    this.audioPlayer.ensureVoiceChatConnection();
-
     await this.enqueueSong(song);
     return song;
   }
 
   async pause() {
-    if (!this.currentSong) {
-      throw new NoMusicError("No song is currently being played.");
-    }
-
     return this.audioPlayer.pause();
   }
 
   async resume() {
-    if (!this.currentSong) {
-      throw new NoMusicError("No song is currently being played.");
-    }
-
     this.audioPlayer.resume();
   }
 
   async skip() {
-    if (
-      this.audioPlayer.status() !== AudioPlayerStatus.Playing ||
-      !this.currentSong
-    ) {
+    if (this.audioPlayer.status() !== AudioPlayerStatus.Playing) {
       throw new NoMusicError("No song is currently being played.");
     }
-
     await this.pause();
     await this.checkQueue();
     await this.resume();
@@ -77,15 +55,15 @@ export class MusicPlayerService {
     return await this.songQueue.getQueue();
   }
 
-  async startAgain() {
-    if (!this.currentSong) {
+  async setup() {
+    this.audioPlayer.ensureVoiceChatConnection();
+    if (!this.audioPlayer.isPlaying()) {
       await this.checkQueue();
     }
   }
 
   private async enqueueSong(song: Song) {
     await this.songQueue.enqueue(song);
-
     if (this.audioPlayer.status() === AudioPlayerStatus.Idle) {
       await this.checkQueue();
     }
@@ -105,27 +83,23 @@ export class MusicPlayerService {
     }
 
     try {
-      this.currentSong = await this.songQueue.dequeue();
-      const audioFile = await this.streamingSource.download(this.currentSong);
-
-      const resource = createAudioResource(audioFile);
-      this.audioPlayer.play(resource);
+      const song = await this.songQueue.dequeue();
+      const audioFile = await this.streamingSource.download(song);
+      this.audioPlayer.play(audioFile);
 
       /**
-       * Slightly throttle sending a message to prevent showing first 'Playing" before 'Queued' when
-       * there are no songs in the queue.
+       * Slightly throttle sending a message
+       * to prevent showing first 'Playing" before 'Queued'
+       * when there are no songs in the queue.
        */
       setTimeout(() => {
-        void this.chat.reply(
-          `Now playing: ${bold(underline(this.currentSong.title))}`
-        );
+        void this.chat.reply(`Now playing: ${bold(underline(song.title))}`);
       }, 1000);
     } catch (error) {
       if (error instanceof YoutubeDownloadError) {
         await this.chat.reply(error.message);
       } else {
         console.log(error);
-
         await this.chat.fallback();
       }
     }

@@ -1,11 +1,11 @@
 import { CommandInteraction } from "discord.js";
 import { IChat } from "@common/typedefs/chat";
 import { SlashCommand } from "@common/infrastructure/providers/discord/slash-commands/abstract-slash-command";
-import { MusicPlayerService } from "@music/app/music-player.service";
+import { MusicService } from "@music/app/music.service";
 
 export class GetMusicQueueCommand extends SlashCommand {
   constructor(
-    private readonly musicPlayerService: MusicPlayerService,
+    private readonly musicPlayerService: MusicService,
     private readonly chat: IChat
   ) {
     super({

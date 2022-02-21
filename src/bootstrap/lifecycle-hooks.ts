@@ -1,4 +1,4 @@
-import { discordConnection } from "../infrastructure/providers/discord";
+import { discordConnection } from "../common/infrastructure/providers/discord";
 
 export const appExit = (error) => {
   console.error("An error has occured. Gracefully exiting an app...\n", error);

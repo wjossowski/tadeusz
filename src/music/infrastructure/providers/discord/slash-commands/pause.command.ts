@@ -1,12 +1,12 @@
 import { NoMusicError } from "@common/errors/music.errors";
 import { SlashCommand } from "@common/infrastructure/providers/discord/slash-commands/abstract-slash-command";
 import { IChat } from "@common/typedefs/chat";
-import { MusicPlayerService } from "@music/app/music-player.service";
+import { MusicService } from "@music/app/music.service";
 import { CommandInteraction } from "discord.js";
 
 export class PauseCommand extends SlashCommand {
   constructor(
-    private readonly musicPlayerService: MusicPlayerService,
+    private readonly musicPlayerService: MusicService,
     private readonly chat: IChat
   ) {
     super({

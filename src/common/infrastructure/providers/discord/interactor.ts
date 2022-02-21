@@ -6,7 +6,7 @@ export interface IInteractorConfig {
   event: keyof ClientEvents;
 }
 
-export abstract class Interactor {
+export abstract class AbstractDiscordInteractor {
   protected readonly client: Client;
   protected readonly mode: "on" | "once";
   protected readonly event: keyof ClientEvents;

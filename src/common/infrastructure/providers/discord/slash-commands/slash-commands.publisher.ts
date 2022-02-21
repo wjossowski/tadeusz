@@ -1,6 +1,6 @@
 import config from "@common/config/config";
 import { Routes } from "discord-api-types/v9";
-import { SlashCommandRegistry } from "./slash-commands.repository";
+import { SlashCommandRegistry } from "./slash-commands.registry";
 
 const { REST } = require("@discordjs/rest");
 

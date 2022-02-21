@@ -1,21 +1,21 @@
 import { CommandInteraction, GuildMember } from "discord.js";
 import {
-  Interactor,
+  AbstractDiscordInteractor,
   IInteractorConfig,
 } from "@common/infrastructure/providers/discord/interactor";
-import { SlashCommandRegistry } from "./slash-commands.repository";
+import { SlashCommandRegistry } from "./slash-commands.registry";
 import { DiscordConnection } from "../discord-connection-impl";
 import { IChat } from "@common/typedefs/chat";
 import { random as randomEmoji } from "node-emoji";
 
-export class SlashCommandsInteractor extends Interactor {
+export class SlashCommandsInteractor extends AbstractDiscordInteractor {
   constructor(
-    props: IInteractorConfig,
+    interactorConfig: IInteractorConfig,
     private readonly slashCommandRepository: SlashCommandRegistry,
     private readonly discordConnection: DiscordConnection,
     private readonly chat: IChat
   ) {
-    super(props);
+    super(interactorConfig);
   }
 
   async execute(interaction: CommandInteraction): Promise<void> {

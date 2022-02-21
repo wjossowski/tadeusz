@@ -3,8 +3,8 @@ import {
   InvalidYoutubeLinkError,
   YoutubeDownloadError,
 } from "@common/errors/music.errors";
-import { IStreamingSource } from "@music/app/ports/music";
 import { Song, SongDetails } from "@music/domain/song";
+import { IStreamingSource } from "@music/app/ports/streaming-source";
 
 export class YoutubeStreamingService implements IStreamingSource {
   async getInfo(url: string): Promise<SongDetails | null> {
