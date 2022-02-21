@@ -1,24 +1,14 @@
 import { CommandInteraction } from "discord.js";
+import { SlashCommand } from "@common/infrastructure/providers/discord/slash-commands/abstract-slash-command";
 import {
-  ISlashCommandOption,
-  SlashCommand,
-} from "@common/infrastructure/providers/discord/slash-commands/abstract-slash-command";
-import { underline, bold } from "@common/presenters/markdown";
-import { IMessagingService } from "@common/typedefs/discord";
-import { UNKNOWN_ERROR_CHAT_MESSAGE } from "@common/utils/const";
+  underline,
+  bold,
+} from "@common/infrastructure/providers/discord/markdown";
+import { IChat } from "@common/typedefs/chat";
+import { UNKNOWN_ERROR_CHAT_MESSAGE } from "@common/infrastructure/providers/discord/messaging/fallback";
 import { MusicPlayerService } from "@music/app/music-player.service";
 
 export class PlayCommand extends SlashCommand {
-  public name = "play";
-  public description = "Play the song from youtube link";
-  public options: ISlashCommandOption[] = [
-    {
-      name: "url",
-      description: "Song's youtube url.",
-      required: true,
-    },
-  ];
-
   private readonly errorMap = {
     InvalidYoutubeLinkError: "Invalid youtube link.",
     ConnectionToVoiceChatNotFoundError: "Connection to voice chat not found.",
@@ -26,16 +16,26 @@ export class PlayCommand extends SlashCommand {
 
   constructor(
     private readonly musicPlayerService: MusicPlayerService,
-    private readonly messagingService: IMessagingService
+    private readonly chat: IChat
   ) {
-    super();
+    super({
+      name: "play",
+      description: "Play the song from youtube link",
+      options: [
+        {
+          name: "url",
+          description: "Song's youtube url.",
+          required: true,
+        },
+      ],
+    });
   }
 
   async execute(interaction: CommandInteraction): Promise<void> {
     try {
       const link = interaction.options.get("url").value as string;
       const queuedSong = await this.musicPlayerService.play(link);
-      await this.messagingService.sendMessage(
+      await this.chat.reply(
         `Queued song: ${underline(bold(queuedSong.title))} by ${
           interaction.user.username
         }`
@@ -47,7 +47,7 @@ export class PlayCommand extends SlashCommand {
         console.error(error);
       }
 
-      await this.messagingService.sendMessage(
+      await this.chat.reply(
         this.errorMap[error.constructor.name] || UNKNOWN_ERROR_CHAT_MESSAGE
       );
     }

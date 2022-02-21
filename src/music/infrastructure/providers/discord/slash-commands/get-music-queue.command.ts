@@ -1,25 +1,25 @@
 import { CommandInteraction } from "discord.js";
-import { IMessagingService } from "@common/typedefs/discord";
+import { IChat } from "@common/typedefs/chat";
 import { SlashCommand } from "@common/infrastructure/providers/discord/slash-commands/abstract-slash-command";
 import { MusicPlayerService } from "@music/app/music-player.service";
 
 export class GetMusicQueueCommand extends SlashCommand {
-  public name = "music-queue";
-  public description = "Show queued songs.";
-  public options = [];
-
   constructor(
     private readonly musicPlayerService: MusicPlayerService,
-    private readonly messagingService: IMessagingService
+    private readonly chat: IChat
   ) {
-    super();
+    super({
+      name: "music-queue",
+      description: "Show queued songs.",
+      options: [],
+    });
   }
 
   async execute(_interaction: CommandInteraction): Promise<void> {
     const queue = await this.musicPlayerService.getQueue();
 
     if (queue.length === 0) {
-      return this.messagingService.sendMessage("Queue is empty.");
+      return this.chat.reply("Queue is empty.");
     }
 
     // noinspection JSUnusedAssignment
@@ -28,6 +28,6 @@ export class GetMusicQueueCommand extends SlashCommand {
       ""
     );
 
-    return this.messagingService.sendMessage(queueView);
+    return this.chat.reply(queueView);
   }
 }

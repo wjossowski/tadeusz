@@ -4,10 +4,13 @@ import {
   NoMusicError,
   YoutubeDownloadError,
 } from "@common/errors/music.errors";
-import { IMessagingService } from "@common/typedefs/discord";
+import { IChat } from "@common/typedefs/chat";
 import { IAudioPlayer, IStreamingSource } from "@music/app/ports/music";
-import { IDiscordConnection } from "../../common/typedefs/connection";
-import { bold, underline } from "@common/presenters/markdown";
+import { IDiscordConnection } from "../../common/typedefs/discord-connection";
+import {
+  bold,
+  underline,
+} from "@common/infrastructure/providers/discord/markdown";
 import { ISongQueue } from "./ports/song-queue";
 
 export class MusicPlayerService {
@@ -16,7 +19,7 @@ export class MusicPlayerService {
   constructor(
     private readonly streamingSource: IStreamingSource,
     private readonly discord: IDiscordConnection,
-    private readonly messagingService: IMessagingService,
+    private readonly chat: IChat,
     private readonly audioPlayer: IAudioPlayer,
     private readonly songQueue: ISongQueue
   ) {
@@ -113,17 +116,17 @@ export class MusicPlayerService {
        * there are no songs in the queue.
        */
       setTimeout(() => {
-        void this.messagingService.sendMessage(
+        void this.chat.reply(
           `Now playing: ${bold(underline(this.currentSong.title))}`
         );
       }, 1000);
     } catch (error) {
       if (error instanceof YoutubeDownloadError) {
-        await this.messagingService.sendMessage(error.message);
+        await this.chat.reply(error.message);
       } else {
         console.log(error);
 
-        await this.messagingService.sendDefaultErrorMessage();
+        await this.chat.fallback();
       }
     }
   }

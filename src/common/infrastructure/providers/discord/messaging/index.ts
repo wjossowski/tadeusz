@@ -1,4 +1,4 @@
-import { MessagingService } from "./messaging.service";
+import { DiscordChat } from "./discord-chat";
 import { discordConnection } from "@common/infrastructure/providers/discord";
 
-export const messagingService = new MessagingService(discordConnection);
+export const discordChat = new DiscordChat(discordConnection);

@@ -8,27 +8,23 @@ export interface ISlashCommandOption {
   required: boolean;
 }
 
+export type SlashCommandConfig = {
+  name: string;
+  description: string;
+  options: ISlashCommandOption[];
+};
+
 export abstract class SlashCommand {
-  public abstract readonly name: string;
-  public abstract readonly description: string;
-  public abstract readonly options: ISlashCommandOption[];
+  public readonly name: string;
+  public readonly description: string;
+  public readonly options: ISlashCommandOption[];
 
   private commandBody: any;
 
-  constructor() {
-    this.setup();
-  }
-
-  /**
-   * Code executed after command has been typed
-   */
-  public abstract execute(interaction: CommandInteraction): Promise<void>;
-
-  public get body() {
-    return this.commandBody;
-  }
-
-  private setup() {
+  constructor(config: SlashCommandConfig) {
+    this.name = config.name;
+    this.description = config.description;
+    this.options = config.options;
     this.commandBody = new SlashCommandBuilder()
       .setName(this.name)
       .setDescription(this.description);
@@ -41,5 +37,14 @@ export abstract class SlashCommand {
           .setRequired(option.required)
       )
     );
+  }
+
+  /**
+   * Code executed after command has been typed
+   */
+  public abstract execute(interaction: CommandInteraction): Promise<void>;
+
+  public get body() {
+    return this.commandBody;
   }
 }

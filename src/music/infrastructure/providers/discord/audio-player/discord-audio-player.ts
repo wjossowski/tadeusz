@@ -5,7 +5,7 @@ import {
   AudioResource,
   VoiceConnectionStatus,
 } from "@discordjs/voice";
-import { IDiscordConnection } from "@common/typedefs/connection";
+import { IDiscordConnection } from "@common/typedefs/discord-connection";
 
 export class DiscordAudioPlayer implements IAudioPlayer {
   constructor(

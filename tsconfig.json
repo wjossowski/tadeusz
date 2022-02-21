@@ -8,7 +8,8 @@
     "sourceMap": true,
     "module": "commonjs",
     "outDir": "dist",
-    "baseUrl": "./",
+    "baseUrl": ".",
+    "rootDir": ".",
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "paths": {

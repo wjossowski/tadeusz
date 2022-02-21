@@ -4,15 +4,15 @@ import { CommandInteraction } from "discord.js";
 import { IAudioPlayer } from "@music/app/ports/music";
 
 export class JoinVoiceCommand extends SlashCommand {
-  public name = "join-voice";
-  public description = "Invite tadeusz to your voice chat";
-  public options = [];
-
   constructor(
     private readonly audioPlayerService: IAudioPlayer,
     private musicPlayerService: MusicPlayerService
   ) {
-    super();
+    super({
+      name: "join-voice",
+      description: "Invite tadeusz to your voice chat",
+      options: [],
+    });
   }
 
   async execute(_interaction: CommandInteraction): Promise<void> {

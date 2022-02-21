@@ -1,4 +1,7 @@
-import { Interactor, IInteractorConfig } from "../common/utils/interactor";
+import {
+  Interactor,
+  IInteractorConfig,
+} from "../common/infrastructure/providers/discord/interactor";
 import { Interaction } from "discord.js";
 
 export class HelloInteractor extends Interactor {
@@ -7,7 +10,7 @@ export class HelloInteractor extends Interactor {
   }
 
   // When the client is ready, run this code (only once)
-  execute(interaction: Interaction): void {
+  execute(_interaction: Interaction): void {
     console.log(`Tadeusz is ready as ${this.client.user.tag}.`);
   }
 }

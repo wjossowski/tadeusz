@@ -1,16 +1,17 @@
 import { TextChannel } from "discord.js";
-import { IDiscordConnection } from "@common/typedefs/connection";
-import { UNKNOWN_ERROR_CHAT_MESSAGE } from "@common/utils/const";
+import { IDiscordConnection } from "@common/typedefs/discord-connection";
+import { UNKNOWN_ERROR_CHAT_MESSAGE } from "./fallback";
+import { IChat } from "@common/typedefs/chat";
 
-export class MessagingService {
+export class DiscordChat implements IChat {
   constructor(private readonly discordConnection: IDiscordConnection) {}
 
-  async sendMessage(content: string) {
+  public async reply(content: string): Promise<void> {
     const channel = this.getChannelInstance();
     await channel.send(content);
   }
 
-  async sendDefaultErrorMessage() {
+  public async fallback(): Promise<void> {
     const channel = this.getChannelInstance();
     await channel.send(UNKNOWN_ERROR_CHAT_MESSAGE);
   }

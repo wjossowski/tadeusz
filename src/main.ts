@@ -6,7 +6,7 @@ import { helloInteractor } from "./hello";
 import { appExit, onKill } from "./common/utils/exit";
 import { discordConnection } from "@common/infrastructure/providers/discord";
 import {
-  slashCommandRepository,
+  slashCommandRegistry,
   slashCommandsInteractor,
 } from "@common/infrastructure/providers/discord/slash-commands";
 import { SlashCommandPublisher } from "@common/infrastructure/providers/discord/slash-commands/slash-commands.publisher";
@@ -32,7 +32,7 @@ async function main() {
 
   discordConnection.client = client;
 
-  await new SlashCommandPublisher(slashCommandRepository).deploy();
+  await new SlashCommandPublisher(slashCommandRegistry).deploy();
 
   // Create controllers
   helloInteractor({

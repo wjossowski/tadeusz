@@ -1,19 +1,15 @@
 import { NoMusicError } from "@common/errors/music.errors";
 import { SlashCommand } from "@common/infrastructure/providers/discord/slash-commands/abstract-slash-command";
-import { IMessagingService } from "@common/typedefs/discord";
+import { IChat } from "@common/typedefs/chat";
 import { MusicPlayerService } from "@music/app/music-player.service";
 import { CommandInteraction } from "discord.js";
 
 export class SkipCommand extends SlashCommand {
-  public name = "skip";
-  public description = "Skip current song";
-  public options = [];
-
   constructor(
     private readonly musicPlayerService: MusicPlayerService,
-    private readonly messagingService: IMessagingService
+    private readonly chat: IChat
   ) {
-    super();
+    super({ name: "skip", description: "Skip current song", options: [] });
   }
 
   async execute(_interaction: CommandInteraction): Promise<void> {
@@ -21,10 +17,10 @@ export class SkipCommand extends SlashCommand {
       await this.musicPlayerService.skip();
     } catch (error) {
       if (error instanceof NoMusicError) {
-        return this.messagingService.sendMessage(error.message);
+        return this.chat.reply(error.message);
       } else {
         console.error(error);
-        return this.messagingService.sendDefaultErrorMessage();
+        return this.chat.fallback();
       }
     }
   }

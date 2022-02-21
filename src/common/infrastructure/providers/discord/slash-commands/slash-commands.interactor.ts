@@ -1,8 +1,11 @@
 import { CommandInteraction, GuildMember } from "discord.js";
-import { Interactor, IInteractorConfig } from "@common/utils/interactor";
+import {
+  Interactor,
+  IInteractorConfig,
+} from "@common/infrastructure/providers/discord/interactor";
 import { SlashCommandRegistry } from "./slash-commands.repository";
-import { DiscordConnection } from "../discord-connection";
-import { IMessagingService } from "@common/typedefs/discord";
+import { DiscordConnection } from "../discord-connection-impl";
+import { IChat } from "@common/typedefs/chat";
 import { random as randomEmoji } from "node-emoji";
 
 export class SlashCommandsInteractor extends Interactor {
@@ -10,7 +13,7 @@ export class SlashCommandsInteractor extends Interactor {
     props: IInteractorConfig,
     private readonly slashCommandRepository: SlashCommandRegistry,
     private readonly discordConnection: DiscordConnection,
-    private readonly messagingService: IMessagingService
+    private readonly chat: IChat
   ) {
     super(props);
   }
@@ -26,7 +29,7 @@ export class SlashCommandsInteractor extends Interactor {
     const command = this.slashCommandRepository.findByName(commandName);
 
     if (!command) {
-      await this.messagingService.sendMessage("Not found!");
+      await this.chat.reply("Not found!");
     }
 
     const { emoji } = randomEmoji();
