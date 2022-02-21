@@ -1,7 +1,7 @@
 import { CommandInteraction } from "discord.js";
 import { IMessagingService } from "@common/typedefs/discord";
 import { SlashCommand } from "@common/infrastructure/providers/discord/slash-commands/abstract-slash-command";
-import { MusicPlayerService } from "@music/music-player.service";
+import { MusicPlayerService } from "@music/app/music-player.service";
 
 export class GetMusicQueueCommand extends SlashCommand {
   public name = "music-queue";

@@ -1,21 +1,16 @@
-import { YoutubeLink } from "./infrastructure/providers/youtube-dl/youtube-link";
-import { Song } from "./domain/song";
+import { Song } from "../domain/song";
 import { AudioPlayerStatus, createAudioResource } from "@discordjs/voice";
 import {
   NoMusicError,
   YoutubeDownloadError,
 } from "@common/errors/music.errors";
 import { IMessagingService } from "@common/typedefs/discord";
-import {
-  IAudioPlayerService,
-  IMusicPlayerService,
-  IYoutubeService,
-} from "@music/app/ports/music";
-import { IDiscordConnection } from "../common/typedefs/connection";
+import { IAudioPlayerService, IYoutubeService } from "@music/app/ports/music";
+import { IDiscordConnection } from "../../common/typedefs/connection";
 import { bold, underline } from "@common/presenters/markdown";
-import { ISongQueue } from "./app/ports/song-queue";
+import { ISongQueue } from "./ports/song-queue";
 
-export class MusicPlayerService implements IMusicPlayerService {
+export class MusicPlayerService {
   private currentSong: Song;
 
   constructor(
@@ -23,7 +18,7 @@ export class MusicPlayerService implements IMusicPlayerService {
     private readonly discordConnection: IDiscordConnection,
     private readonly messagingService: IMessagingService,
     private readonly audioPlayerService: IAudioPlayerService,
-    private readonly musicQueueService: ISongQueue
+    private readonly songQueue: ISongQueue
   ) {
     /**
      * Idle state event callback only starts after something was already
@@ -39,9 +34,9 @@ export class MusicPlayerService implements IMusicPlayerService {
     );
   }
 
-  async play(link: YoutubeLink): Promise<Song> {
-    const { videoDetails: details } = await this.youtubeService.getInfo(link);
-    const song = Song.fromVideoDetails(details);
+  async play(link: string): Promise<Song> {
+    const details = await this.youtubeService.getInfo(link);
+    const song = new Song(details);
 
     this.audioPlayerService.ensureVoiceChatConnection();
 
@@ -79,7 +74,7 @@ export class MusicPlayerService implements IMusicPlayerService {
   }
 
   async getQueue() {
-    return await this.musicQueueService.getQueue();
+    return await this.songQueue.getQueue();
   }
 
   async startAgain() {
@@ -89,7 +84,7 @@ export class MusicPlayerService implements IMusicPlayerService {
   }
 
   private async enqueueSong(song: Song) {
-    await this.musicQueueService.enqueue(song);
+    await this.songQueue.enqueue(song);
 
     if (this.audioPlayerService.status() === AudioPlayerStatus.Idle) {
       await this.checkQueue();
@@ -103,14 +98,14 @@ export class MusicPlayerService implements IMusicPlayerService {
    */
   private async checkQueue() {
     const connection = this.discordConnection.getVoiceChatConnection();
-    const queueLength = await this.musicQueueService.getQueueLength();
+    const queueLength = await this.songQueue.count();
 
     if (queueLength === 0) {
       return connection.disconnect();
     }
 
     try {
-      this.currentSong = await this.musicQueueService.dequeue();
+      this.currentSong = await this.songQueue.dequeue();
       const audioFile = await this.youtubeService.download(this.currentSong);
 
       const resource = createAudioResource(audioFile);

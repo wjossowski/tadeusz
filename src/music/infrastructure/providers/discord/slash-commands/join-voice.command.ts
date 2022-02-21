@@ -1,6 +1,6 @@
 import { SlashCommand } from "@common/infrastructure/providers/discord/slash-commands/abstract-slash-command";
-import { AudioPlayerService } from "@music/infrastructure/providers/discord/audio-player/audio-player.service";
-import { MusicPlayerService } from "@music/music-player.service";
+import { DiscordAudioPlayer } from "@music/infrastructure/providers/discord/audio-player/discord-audio-player";
+import { MusicPlayerService } from "@music/app/music-player.service";
 import { CommandInteraction } from "discord.js";
 
 export class JoinVoiceCommand extends SlashCommand {
@@ -9,7 +9,7 @@ export class JoinVoiceCommand extends SlashCommand {
   public options = [];
 
   constructor(
-    private readonly audioPlayerService: AudioPlayerService,
+    private readonly audioPlayerService: DiscordAudioPlayer,
     private musicPlayerService: MusicPlayerService
   ) {
     super();

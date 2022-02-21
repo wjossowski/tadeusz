@@ -1,6 +1,5 @@
 import { Song } from "../../../domain/song";
 import { ISongSchema, SongEntity } from "./model/song.entity";
-import { YoutubeLink } from "@music/infrastructure/providers/youtube-dl/youtube-link";
 import { ISongQueue } from "@music/app/ports/song-queue";
 
 export class MongoSongQueue implements ISongQueue {
@@ -9,7 +8,7 @@ export class MongoSongQueue implements ISongQueue {
     return songs.map(this.deserialize);
   }
 
-  async getQueueLength(): Promise<number> {
+  async count(): Promise<number> {
     return SongEntity.count();
   }
 
@@ -28,19 +27,19 @@ export class MongoSongQueue implements ISongQueue {
     return new SongEntity({
       title: song.title,
       id: song.id,
-      url: song.url.value,
+      url: song.url,
       isPrivate: song.isPrivate,
       createdAt: song.createdAt,
     });
   }
 
-  private deserialize(songSchema: ISongSchema) {
-    return new Song(
-      songSchema.title,
-      songSchema.id,
-      new YoutubeLink(songSchema.url),
-      songSchema.isPrivate,
-      songSchema.createdAt
-    );
+  private deserialize(record: ISongSchema) {
+    return new Song({
+      id: record.id,
+      isPrivate: record.isPrivate,
+      title: record.title,
+      url: record.url,
+      createdAt: record.createdAt,
+    });
   }
 }

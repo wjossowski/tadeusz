@@ -1,7 +1,7 @@
-import { MusicPlayerService } from "./music-player.service";
+import { MusicPlayerService } from "./app/music-player.service";
 import { discordConnection } from "../common/infrastructure/providers/discord";
-import { MongoSongQueue } from "./infrastructure/repositories/mongo/song.repository";
-import { AudioPlayerService } from "./infrastructure/providers/discord/audio-player/audio-player.service";
+import { MongoSongQueue } from "./infrastructure/repositories/mongo/mongo-song-queue";
+import { DiscordAudioPlayer } from "./infrastructure/providers/discord/audio-player/discord-audio-player";
 import { createAudioPlayer } from "@discordjs/voice";
 import { IAudioAPI } from "./app/ports/music";
 import { messagingService } from "@common/infrastructure/providers/discord/messaging";
@@ -16,9 +16,9 @@ import { YoutubeService } from "./infrastructure/providers/youtube-dl/youtube.se
 
 export const youtubeService = new YoutubeService();
 
-export const mongoSongRepository = new MongoSongQueue();
+export const mongoSongQueue = new MongoSongQueue();
 
-export const audioPlayerService = new AudioPlayerService(
+export const discordAudioPlayer = new DiscordAudioPlayer(
   discordConnection,
   createAudioPlayer() as IAudioAPI
 );
@@ -27,8 +27,8 @@ export const musicPlayerService = new MusicPlayerService(
   youtubeService,
   discordConnection,
   messagingService,
-  audioPlayerService,
-  mongoSongRepository
+  discordAudioPlayer,
+  mongoSongQueue
 );
 
 // Commands
@@ -38,5 +38,5 @@ slashCommandRepository.add([
   new ResumeCommand(musicPlayerService, messagingService),
   new SkipCommand(musicPlayerService, messagingService),
   new GetMusicQueueCommand(musicPlayerService, messagingService),
-  new JoinVoiceCommand(audioPlayerService, musicPlayerService),
+  new JoinVoiceCommand(discordAudioPlayer, musicPlayerService),
 ]);

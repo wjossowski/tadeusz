@@ -7,10 +7,10 @@ import {
 } from "@discordjs/voice";
 import { IDiscordConnection } from "@common/typedefs/connection";
 
-export class AudioPlayerService implements IAudioPlayerService {
+export class DiscordAudioPlayer implements IAudioPlayerService {
   constructor(
     private readonly discordConnection: IDiscordConnection,
-    private readonly audioPlayer: IAudioAPI
+    private readonly audioApi: IAudioAPI
   ) {}
 
   public ensureVoiceChatConnection() {
@@ -18,7 +18,7 @@ export class AudioPlayerService implements IAudioPlayerService {
 
     if (!connection) {
       const connection = this.connect();
-      connection.subscribe(this.audioPlayer as AudioPlayer);
+      connection.subscribe(this.audioApi as AudioPlayer);
       return;
     }
 
@@ -28,23 +28,23 @@ export class AudioPlayerService implements IAudioPlayerService {
   }
 
   public handleStatusChange(status, listener) {
-    this.audioPlayer.on(status, listener);
+    this.audioApi.on(status, listener);
   }
 
   play(resource: AudioResource<unknown>) {
-    return this.audioPlayer.play(resource);
+    return this.audioApi.play(resource);
   }
 
   pause() {
-    return this.audioPlayer.pause();
+    return this.audioApi.pause();
   }
 
   resume() {
-    return this.audioPlayer.unpause();
+    return this.audioApi.unpause();
   }
 
   status() {
-    return this.audioPlayer.state.status;
+    return this.audioApi.state.status;
   }
 
   private connect() {

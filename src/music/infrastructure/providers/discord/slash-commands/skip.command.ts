@@ -1,7 +1,7 @@
 import { NoMusicError } from "@common/errors/music.errors";
 import { SlashCommand } from "@common/infrastructure/providers/discord/slash-commands/abstract-slash-command";
 import { IMessagingService } from "@common/typedefs/discord";
-import { MusicPlayerService } from "@music/music-player.service";
+import { MusicPlayerService } from "@music/app/music-player.service";
 import { CommandInteraction } from "discord.js";
 
 export class SkipCommand extends SlashCommand {

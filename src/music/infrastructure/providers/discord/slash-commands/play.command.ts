@@ -6,8 +6,7 @@ import {
 import { underline, bold } from "@common/presenters/markdown";
 import { IMessagingService } from "@common/typedefs/discord";
 import { UNKNOWN_ERROR_CHAT_MESSAGE } from "@common/utils/const";
-import { MusicPlayerService } from "@music/music-player.service";
-import { YoutubeLink } from "@music/infrastructure/providers/youtube-dl/youtube-link";
+import { MusicPlayerService } from "@music/app/music-player.service";
 
 export class PlayCommand extends SlashCommand {
   public name = "play";
@@ -34,10 +33,7 @@ export class PlayCommand extends SlashCommand {
 
   async execute(interaction: CommandInteraction): Promise<void> {
     try {
-      const link = new YoutubeLink(
-        interaction.options.get("url").value as string
-      );
-
+      const link = interaction.options.get("url").value as string;
       const queuedSong = await this.musicPlayerService.play(link);
       await this.messagingService.sendMessage(
         `Queued song: ${underline(bold(queuedSong.title))} by ${
