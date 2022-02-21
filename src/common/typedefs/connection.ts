@@ -5,7 +5,7 @@ import {
 } from "discord.js";
 import { VoiceConnection } from "@discordjs/voice";
 
-export interface IConnectionService {
+export interface IDiscordConnection {
   /**
    * Discord client
    * @private

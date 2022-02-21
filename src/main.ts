@@ -4,7 +4,7 @@ import { DBConnectionError } from "./common/errors/db.errors";
 import { Client, Intents } from "discord.js";
 import { helloInteractor } from "./hello";
 import { appExit, onKill } from "./common/utils/exit";
-import { connectionService } from "@common/infrastructure/providers/discord";
+import { discordConnection } from "@common/infrastructure/providers/discord";
 import {
   slashCommandRepository,
   slashCommandsInteractor,
@@ -30,7 +30,7 @@ async function main() {
     ],
   });
 
-  connectionService.client = client;
+  discordConnection.client = client;
 
   await new SlashCommandPublisher(slashCommandRepository).deploy();
 

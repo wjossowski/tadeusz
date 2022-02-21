@@ -1,9 +1,9 @@
-import { connectionService } from "../infrastructure/providers/discord";
+import { discordConnection } from "../infrastructure/providers/discord";
 
 export const appExit = (error) => {
   console.error("An error has occured. Gracefully exiting an app...\n", error);
 
-  connectionService.disconnectFromVoiceChat();
+  discordConnection.disconnectFromVoiceChat();
 
   process.kill(0);
 };
@@ -11,7 +11,7 @@ export const appExit = (error) => {
 export const onKill = () => {
   console.error("Shutting down Tadeusz...");
 
-  connectionService.disconnectFromVoiceChat();
+  discordConnection.disconnectFromVoiceChat();
 
   process.kill(0);
 };

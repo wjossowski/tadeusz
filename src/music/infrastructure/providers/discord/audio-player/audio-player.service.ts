@@ -1,54 +1,54 @@
-import { IAudioAPI, IAudioPlayerService } from "@common/typedefs/music";
+import { IAudioAPI, IAudioPlayerService } from "@music/app/ports/music";
 import {
   AudioPlayer,
   AudioPlayerStatus,
   AudioResource,
   VoiceConnectionStatus,
 } from "@discordjs/voice";
-import { IConnectionService } from "@common/typedefs/connection";
+import { IDiscordConnection } from "@common/typedefs/connection";
 
 export class AudioPlayerService implements IAudioPlayerService {
   constructor(
-    private readonly connectionService: IConnectionService,
+    private readonly discordConnection: IDiscordConnection,
     private readonly audioPlayer: IAudioAPI
   ) {}
 
   public ensureVoiceChatConnection() {
-    const connection = this.connectionService.getVoiceChatConnection();
+    const connection = this.discordConnection.getVoiceChatConnection();
 
     if (!connection) {
-      const connection = this.createConnection();
+      const connection = this.connect();
       connection.subscribe(this.audioPlayer as AudioPlayer);
       return;
     }
 
-    if (this.getPlayerStatus() === AudioPlayerStatus.Paused) {
-      this.unpausePlayer();
+    if (this.status() === AudioPlayerStatus.Paused) {
+      this.resume();
     }
   }
 
-  public registerAction(status, listener) {
+  public handleStatusChange(status, listener) {
     this.audioPlayer.on(status, listener);
   }
 
-  playPlayer(resource: AudioResource<unknown>) {
+  play(resource: AudioResource<unknown>) {
     return this.audioPlayer.play(resource);
   }
 
-  pausePlayer() {
+  pause() {
     return this.audioPlayer.pause();
   }
 
-  unpausePlayer() {
+  resume() {
     return this.audioPlayer.unpause();
   }
 
-  getPlayerStatus() {
+  status() {
     return this.audioPlayer.state.status;
   }
 
-  private createConnection() {
-    const connection = this.connectionService.createVoiceChatConnection();
+  private connect() {
+    const connection = this.discordConnection.createVoiceChatConnection();
 
     // Cleanup (i.e on kick)
     connection.on(VoiceConnectionStatus.Disconnected, () => {

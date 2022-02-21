@@ -18,8 +18,8 @@ export class ResumeCommand extends SlashCommand {
 
   async execute(_interaction: CommandInteraction): Promise<void> {
     try {
-      await this.musicPlayerService.unpause();
-      return this.messagingService.sendMessage("Song unpaused.");
+      await this.musicPlayerService.resume();
+      return this.messagingService.sendMessage("Song resumed.");
     } catch (error) {
       if (error instanceof NoMusicError) {
         return this.messagingService.sendMessage(error.message);

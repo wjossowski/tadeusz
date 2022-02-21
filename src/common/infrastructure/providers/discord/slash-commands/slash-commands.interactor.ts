@@ -9,7 +9,7 @@ export class SlashCommandsInteractor extends Interactor {
   constructor(
     props: IInteractorConfig,
     private readonly slashCommandRepository: SlashCommandRepository,
-    private readonly connectionService: DiscordConnection,
+    private readonly discordConnection: DiscordConnection,
     private readonly messagingService: IMessagingService
   ) {
     super(props);
@@ -36,10 +36,10 @@ export class SlashCommandsInteractor extends Interactor {
   }
 
   private setConnectionProps(interaction: CommandInteraction) {
-    this.connectionService.guildId = interaction.guild.id;
-    this.connectionService.channelId = interaction.channel.id;
-    this.connectionService.voiceAdapterCreator =
+    this.discordConnection.guildId = interaction.guild.id;
+    this.discordConnection.channelId = interaction.channel.id;
+    this.discordConnection.voiceAdapterCreator =
       interaction.guild.voiceAdapterCreator;
-    this.connectionService.currentUser = interaction.member as GuildMember;
+    this.discordConnection.currentUser = interaction.member as GuildMember;
   }
 }

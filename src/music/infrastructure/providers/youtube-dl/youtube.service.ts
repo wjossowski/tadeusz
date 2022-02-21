@@ -2,8 +2,8 @@ import ytdl from "ytdl-core-discord";
 import { videoInfo } from "ytdl-core";
 import { YoutubeLink } from "./youtube-link";
 import { YoutubeDownloadError } from "@common/errors/music.errors";
-import { IYoutubeService } from "@common/typedefs/music";
-import { Song } from "@music/song";
+import { IYoutubeService } from "@music/app/ports/music";
+import { Song } from "@music/domain/song";
 
 export class YoutubeService implements IYoutubeService {
   async getInfo(link: YoutubeLink): Promise<videoInfo | null> {

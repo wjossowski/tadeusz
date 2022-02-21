@@ -1,3 +1,3 @@
 import { DiscordConnection } from "./connection.service";
 
-export const connectionService = new DiscordConnection();
+export const discordConnection = new DiscordConnection();

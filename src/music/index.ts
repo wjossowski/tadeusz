@@ -1,9 +1,9 @@
 import { MusicPlayerService } from "./music-player.service";
-import { connectionService } from "../common/infrastructure/providers/discord";
-import { MusicQueueService } from "./music-queue.service";
+import { discordConnection } from "../common/infrastructure/providers/discord";
+import { MongoSongQueue } from "./infrastructure/repositories/mongo/song.repository";
 import { AudioPlayerService } from "./infrastructure/providers/discord/audio-player/audio-player.service";
 import { createAudioPlayer } from "@discordjs/voice";
-import { IAudioAPI } from "../common/typedefs/music";
+import { IAudioAPI } from "./app/ports/music";
 import { messagingService } from "@common/infrastructure/providers/discord/messaging";
 import { slashCommandRepository } from "@common/infrastructure/providers/discord/slash-commands";
 import { GetMusicQueueCommand } from "./infrastructure/providers/discord/slash-commands/get-music-queue.command";
@@ -16,19 +16,19 @@ import { YoutubeService } from "./infrastructure/providers/youtube-dl/youtube.se
 
 export const youtubeService = new YoutubeService();
 
-export const musicQueueService = new MusicQueueService();
+export const mongoSongRepository = new MongoSongQueue();
 
 export const audioPlayerService = new AudioPlayerService(
-  connectionService,
+  discordConnection,
   createAudioPlayer() as IAudioAPI
 );
 
 export const musicPlayerService = new MusicPlayerService(
   youtubeService,
-  connectionService,
+  discordConnection,
   messagingService,
   audioPlayerService,
-  musicQueueService
+  mongoSongRepository
 );
 
 // Commands

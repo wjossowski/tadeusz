@@ -1,9 +1,9 @@
 import { TextChannel } from "discord.js";
-import { IConnectionService } from "@common/typedefs/connection";
+import { IDiscordConnection } from "@common/typedefs/connection";
 import { UNKNOWN_ERROR_CHAT_MESSAGE } from "@common/utils/const";
 
 export class MessagingService {
-  constructor(private readonly connectionService: IConnectionService) {}
+  constructor(private readonly discordConnection: IDiscordConnection) {}
 
   async sendMessage(content: string) {
     const channel = this.getChannelInstance();
@@ -16,8 +16,8 @@ export class MessagingService {
   }
 
   private getChannelInstance(): TextChannel {
-    const client = this.connectionService.client;
-    const channelId = this.connectionService.channelId;
+    const client = this.discordConnection.client;
+    const channelId = this.discordConnection.channelId;
     return client.channels.cache.get(channelId) as TextChannel;
   }
 }

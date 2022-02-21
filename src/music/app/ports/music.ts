@@ -4,7 +4,7 @@ import {
   AudioResource,
   VoiceConnection,
 } from "@discordjs/voice";
-import { Song } from "@music/song";
+import { Song } from "@music/domain/song";
 import { YoutubeLink } from "@music/infrastructure/providers/youtube-dl/youtube-link";
 import { videoInfo } from "ytdl-core";
 import { Readable } from "stream";
@@ -23,24 +23,17 @@ export interface IAudioAPI {
 
 export interface IAudioPlayerService {
   ensureVoiceChatConnection: () => void;
-  registerAction: (status: any, listener: any) => void;
-  playPlayer: (resource: AudioResource<unknown>) => void;
-  pausePlayer: () => void;
-  unpausePlayer: () => void;
-  getPlayerStatus: () => AudioPlayerStatus;
-}
-
-export interface IMusicQueueService {
-  getQueue: () => Promise<Song[]>;
-  getQueueLength: () => Promise<number>;
-  dequeue: () => Promise<Song>;
-  enqueue: (song: Song) => Promise<void>;
+  handleStatusChange: (status: any, listener: any) => void;
+  play: (resource: AudioResource<unknown>) => void;
+  pause: () => void;
+  resume: () => void;
+  status: () => AudioPlayerStatus;
 }
 
 export interface IMusicPlayerService {
   play: (link: YoutubeLink) => Promise<Song>;
   pause: () => Promise<void>;
-  unpause: () => Promise<void>;
+  resume: () => Promise<void>;
   skip: () => Promise<void>;
 
   /**

@@ -1,6 +1,6 @@
-import { PrivateYoutubeVideoError } from "../common/errors/music.errors";
+import { PrivateYoutubeVideoError } from "@common/errors/music.errors";
 import { MoreVideoDetails } from "ytdl-core";
-import { YoutubeLink } from "./infrastructure/providers/youtube-dl/youtube-link";
+import { YoutubeLink } from "../infrastructure/providers/youtube-dl/youtube-link";
 
 export class Song {
   public readonly createdAt: Date;
