@@ -1,5 +1,5 @@
 import { SlashCommand } from "./abstract-slash-command";
-import { IsClass } from "../../../../typedefs/common";
+import { IsClass } from "@common/typedefs/helpers";
 
 export class SlashCommandRepository {
   private readonly commands = new Map();

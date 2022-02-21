@@ -4,8 +4,8 @@ import {
   AudioResource,
   VoiceConnection,
 } from "@discordjs/voice";
-import { Song } from "../../music/song";
-import { YoutubeLink } from "../../music/youtube-link";
+import { Song } from "@music/song";
+import { YoutubeLink } from "@music/infrastructure/providers/youtube-dl/youtube-link";
 import { videoInfo } from "ytdl-core";
 import { Readable } from "stream";
 

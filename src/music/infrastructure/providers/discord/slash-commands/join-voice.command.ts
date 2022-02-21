@@ -1,5 +1,5 @@
 import { SlashCommand } from "@common/infrastructure/providers/discord/slash-commands/abstract-slash-command";
-import { AudioPlayerService } from "@music/audio-player.service";
+import { AudioPlayerService } from "@music/infrastructure/providers/discord/audio-player/audio-player.service";
 import { MusicPlayerService } from "@music/music-player.service";
 import { CommandInteraction } from "discord.js";
 
@@ -15,7 +15,7 @@ export class JoinVoiceCommand extends SlashCommand {
     super();
   }
 
-  async execute(interaction: CommandInteraction): Promise<void> {
+  async execute(_interaction: CommandInteraction): Promise<void> {
     this.audioPlayerService.ensureVoiceChatConnection();
     await this.musicPlayerService.startAgain();
   }

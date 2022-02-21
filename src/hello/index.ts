@@ -1,6 +1,5 @@
 import { HelloInteractor } from "./hello.interactor";
-import { IInteractorConfig } from "../common/utils/interactor";
-import { InteractorFactory } from "../common/typedefs/common";
+import { IInteractorConfig, InteractorFactory } from "@common/utils/interactor";
 
 export const helloInteractor: InteractorFactory<HelloInteractor> = (
   props: IInteractorConfig

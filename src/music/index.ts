@@ -1,8 +1,7 @@
 import { MusicPlayerService } from "./music-player.service";
 import { connectionService } from "../common/infrastructure/providers/discord";
-import { YoutubeService } from "./youtube.service";
 import { MusicQueueService } from "./music-queue.service";
-import { AudioPlayerService } from "./audio-player.service";
+import { AudioPlayerService } from "./infrastructure/providers/discord/audio-player/audio-player.service";
 import { createAudioPlayer } from "@discordjs/voice";
 import { IAudioAPI } from "../common/typedefs/music";
 import { messagingService } from "@common/infrastructure/providers/discord/messaging";
@@ -13,6 +12,7 @@ import { PauseCommand } from "./infrastructure/providers/discord/slash-commands/
 import { PlayCommand } from "./infrastructure/providers/discord/slash-commands/play.command";
 import { ResumeCommand } from "./infrastructure/providers/discord/slash-commands/resume.command";
 import { SkipCommand } from "./infrastructure/providers/discord/slash-commands/skip.command";
+import { YoutubeService } from "./infrastructure/providers/youtube-dl/youtube.service";
 
 export const youtubeService = new YoutubeService();
 

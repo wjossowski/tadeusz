@@ -22,7 +22,7 @@ export abstract class SlashCommand {
   /**
    * Code executed after command has been typed
    */
-  public abstract execute(interaction: CommandInteraction): void;
+  public abstract execute(interaction: CommandInteraction): Promise<void>;
 
   public get body() {
     return this.commandBody;

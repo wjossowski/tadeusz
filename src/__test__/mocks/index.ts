@@ -6,11 +6,8 @@ import {
   InternalDiscordGatewayAdapterCreator,
 } from "discord.js";
 import { AudioPlayerStatus, VoiceConnection } from "@discordjs/voice";
-import { IMessagingService } from "../../typedefs/discord";
-import { YoutubeLink } from "../../music/youtube-link";
 import { Song } from "../../music/song";
 
-import { IConnectionService } from "../../typedefs/connection";
 import {
   IAudioPlayerService,
   IMusicQueueService,

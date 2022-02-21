@@ -7,7 +7,7 @@ import { underline, bold } from "@common/presenters/markdown";
 import { IMessagingService } from "@common/typedefs/discord";
 import { UNKNOWN_ERROR_CHAT_MESSAGE } from "@common/utils/const";
 import { MusicPlayerService } from "@music/music-player.service";
-import { YoutubeLink } from "@music/youtube-link";
+import { YoutubeLink } from "@music/infrastructure/providers/youtube-dl/youtube-link";
 
 export class PlayCommand extends SlashCommand {
   public name = "play";

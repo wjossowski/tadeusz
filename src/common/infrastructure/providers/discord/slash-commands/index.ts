@@ -1,7 +1,6 @@
 import { SlashCommandRepository } from "./slash-commands.repository";
 import { SlashCommandsInteractor } from "./slash-commands.interactor";
-import { IInteractorConfig } from "@common/utils/interactor";
-import { InteractorFactory } from "@common/typedefs/common";
+import { IInteractorConfig, InteractorFactory } from "@common/utils/interactor";
 import { connectionService } from "..";
 import { messagingService } from "../messaging";
 

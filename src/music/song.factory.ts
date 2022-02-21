@@ -1,6 +1,6 @@
 import { Song } from "./song";
 import { ISongSchema, SongEntity } from "./song.entity";
-import { YoutubeLink } from "./youtube-link";
+import { YoutubeLink } from "./infrastructure/providers/youtube-dl/youtube-link";
 import { SchemaModelFactory } from "./schema-model-factory";
 
 class SongFactory extends SchemaModelFactory<ISongSchema, Song> {

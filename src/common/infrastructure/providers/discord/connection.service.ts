@@ -4,8 +4,8 @@ import {
   GuildMember,
   InternalDiscordGatewayAdapterCreator,
 } from "discord.js";
-import { ConnectionToVoiceChatNotFoundError } from "../../../errors/common.errors";
-import { IConnectionService } from "../../../typedefs/connection";
+import { ConnectionToVoiceChatNotFoundError } from "@common/errors/common.errors";
+import { IConnectionService } from "@common/typedefs/connection";
 
 export class DiscordConnection implements IConnectionService {
   client: Client;

@@ -21,3 +21,5 @@ export abstract class Interactor {
 
   public abstract execute(interaction: Interaction): any;
 }
+
+export type InteractorFactory<T> = (config: IInteractorConfig) => T;

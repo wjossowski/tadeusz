@@ -1,17 +1,17 @@
-import { YoutubeLink } from "./youtube-link";
+import { YoutubeLink } from "./infrastructure/providers/youtube-dl/youtube-link";
 import { Song } from "./song";
 import { AudioPlayerStatus, createAudioResource } from "@discordjs/voice";
 import {
   NoMusicError,
   YoutubeDownloadError,
-} from "../common/errors/music.errors";
-import { IMessagingService } from "../common/typedefs/discord";
+} from "@common/errors/music.errors";
+import { IMessagingService } from "@common/typedefs/discord";
 import {
   IAudioPlayerService,
   IMusicPlayerService,
   IMusicQueueService,
   IYoutubeService,
-} from "../common/typedefs/music";
+} from "@common/typedefs/music";
 import { IConnectionService } from "../common/typedefs/connection";
 import { bold, underline } from "@common/presenters/markdown";
 
