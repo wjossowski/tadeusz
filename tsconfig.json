@@ -8,8 +8,7 @@
     "sourceMap": true,
     "module": "commonjs",
     "outDir": "dist",
-    "baseUrl": ".",
-    "rootDir": ".",
+    "baseUrl": "./",
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "paths": {
@@ -17,6 +16,6 @@
       "@music/*": ["src/music/*"]
     }
   },
-  "include": ["src/**/*.ts"],
+  "include": ["**/*.ts"],
   "exclude": ["node_modules", "src/__test__", "dist"]
 }

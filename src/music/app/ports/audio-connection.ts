@@ -1,4 +1,5 @@
 export interface IAudioConnection {
   isActive(): boolean;
-  ensureVoiceChatConnection(): void;
+  ensureConnection(): void;
+  disconnect(): void;
 }

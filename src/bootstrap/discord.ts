@@ -1,14 +1,11 @@
 import { Client, Intents } from "discord.js";
 import { helloInteractor } from "../hello";
 import { SlashCommandPublisher } from "@common/infrastructure/providers/discord/slash-commands/slash-commands.publisher";
-import { SlashCommandRegistry } from "@common/infrastructure/providers/discord/slash-commands/slash-commands.registry";
-import { DiscordConnection } from "@common/infrastructure/providers/discord/discord-connection-impl";
-import { DiscordChat } from "@common/infrastructure/providers/discord/chat/discord-chat";
-import { slashCommandsInteractor } from "@common/infrastructure/providers/discord";
-
-export const slashCommandRegistry = new SlashCommandRegistry();
-export const discordConnection = new DiscordConnection();
-export const discordChat = new DiscordChat(discordConnection);
+import {
+  discordConnection,
+  slashCommandRegistry,
+  slashCommandsInteractor,
+} from "@common/infrastructure/providers/discord";
 
 export async function bootstrapDiscord() {
   const client = new Client({

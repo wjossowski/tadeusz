@@ -27,7 +27,7 @@ export class DiscordConnection implements IDiscordConnection {
     });
   }
 
-  getVoiceChatConnection(): VoiceConnection {
+  getVoiceChatConnection(): VoiceConnection | undefined {
     return DiscordVoice.getVoiceConnection(this.guildId);
   }
 

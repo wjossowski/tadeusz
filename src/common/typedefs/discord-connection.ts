@@ -33,7 +33,7 @@ export interface IDiscordConnection {
   voiceAdapterCreator: InternalDiscordGatewayAdapterCreator;
 
   createVoiceChatConnection: () => VoiceConnection;
-  getVoiceChatConnection: () => VoiceConnection;
+  getVoiceChatConnection: () => VoiceConnection | undefined;
   disconnectFromVoiceChat: () => boolean;
   isUserOnVoiceChat: () => boolean;
 }

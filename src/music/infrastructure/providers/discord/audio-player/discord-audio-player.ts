@@ -1,10 +1,4 @@
-import {
-  AudioPlayer,
-  AudioPlayerStatus,
-  createAudioResource,
-  VoiceConnectionStatus,
-} from "@discordjs/voice";
-import { IDiscordConnection } from "@common/typedefs/discord-connection";
+import { AudioPlayerStatus, createAudioResource } from "@discordjs/voice";
 import { IAudioPlayer } from "@music/app/ports/audio-player";
 import { IAudioAPI } from "@music/app/ports/audio-api";
 import { Song } from "@music/domain/song";
@@ -24,13 +18,6 @@ export class DiscordAudioPlayer implements IAudioPlayer {
     });
   }
 
-  public ensureVoiceChatConnection() {
-    this.audioConnection.ensureVoiceChatConnection();
-    if (this.status() === AudioPlayerStatus.Paused) {
-      this.resume();
-    }
-  }
-
   public handleStatusChange(status, listener) {
     this.audioApi.on(status, listener);
   }
@@ -40,6 +27,7 @@ export class DiscordAudioPlayer implements IAudioPlayer {
   }
 
   public play(source: Readable) {
+    this.audioConnection.ensureConnection();
     const resource = createAudioResource(source);
     return this.audioApi.play(resource);
   }
@@ -48,7 +36,7 @@ export class DiscordAudioPlayer implements IAudioPlayer {
     if (!this.currentSong) {
       throw new NoMusicError("No song is currently being played.");
     }
-    if (this.audioApi.state.status !== AudioPlayerStatus.Playing) {
+    if (this.status() !== AudioPlayerStatus.Playing) {
       throw new NoMusicError("No song is currently being played.");
     }
     return this.audioApi.pause();
@@ -59,6 +47,10 @@ export class DiscordAudioPlayer implements IAudioPlayer {
       throw new NoMusicError("No song is currently being played.");
     }
     return this.audioApi.unpause();
+  }
+
+  public stop() {
+    return this.audioConnection.disconnect();
   }
 
   public status() {

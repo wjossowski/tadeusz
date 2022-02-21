@@ -3,6 +3,8 @@ import { bootstrapDiscord } from "./bootstrap/discord";
 import { bootstrapMongo } from "./bootstrap/mongodb";
 import { appExit, onKill } from "./bootstrap/lifecycle-hooks";
 
+import "./music";
+
 async function main() {
   await bootstrapMongo();
   await bootstrapDiscord().then((client) =>

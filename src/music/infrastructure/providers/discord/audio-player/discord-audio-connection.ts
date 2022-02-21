@@ -5,16 +5,23 @@ import { IAudioConnection } from "@music/app/ports/audio-connection";
 
 export class DiscordAudioConnection implements IAudioConnection {
   constructor(
-    private readonly discordConnection: IDiscordConnection,
+    private readonly discord: IDiscordConnection,
     private readonly audioApi: IAudioAPI
   ) {}
 
   public isActive(): boolean {
-    return !!this.discordConnection.getVoiceChatConnection();
+    return !!this.discord.getVoiceChatConnection();
   }
 
-  public ensureVoiceChatConnection() {
-    const connection = this.discordConnection.getVoiceChatConnection();
+  public disconnect() {
+    const connection = this.discord.getVoiceChatConnection();
+    if (connection) {
+      connection.disconnect();
+    }
+  }
+
+  public ensureConnection() {
+    const connection = this.discord.getVoiceChatConnection();
 
     if (!connection) {
       const connection = this.connect();
@@ -23,7 +30,7 @@ export class DiscordAudioConnection implements IAudioConnection {
   }
 
   private connect() {
-    const connection = this.discordConnection.createVoiceChatConnection();
+    const connection = this.discord.createVoiceChatConnection();
 
     // Cleanup (i.e on kick)
     connection.on(VoiceConnectionStatus.Disconnected, () => {

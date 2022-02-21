@@ -7,6 +7,7 @@ import {
 import { IChat } from "@common/typedefs/chat";
 import { UNKNOWN_ERROR_CHAT_MESSAGE } from "@common/infrastructure/providers/discord/chat/fallback";
 import { MusicService } from "@music/app/music.service";
+import { slashCommandRegistry } from "@common/infrastructure/providers/discord";
 
 export class PlayCommand extends SlashCommand {
   private readonly errorMap = {

@@ -1,9 +1,6 @@
 import { Song } from "../domain/song";
 import { AudioPlayerStatus } from "@discordjs/voice";
-import {
-  NoMusicError,
-  YoutubeDownloadError,
-} from "@common/errors/music.errors";
+import { YoutubeDownloadError } from "@common/errors/music.errors";
 import { IChat } from "@common/typedefs/chat";
 import {
   bold,
@@ -12,15 +9,13 @@ import {
 import { ISongQueue } from "./ports/song-queue";
 import { IStreamingSource } from "./ports/streaming-source";
 import { IAudioPlayer } from "./ports/audio-player";
-import { IDiscordConnection } from "@common/typedefs/discord-connection";
 
 export class MusicService {
   constructor(
     private readonly streamingSource: IStreamingSource,
-    private readonly discord: IDiscordConnection,
-    private readonly chat: IChat,
     private readonly audioPlayer: IAudioPlayer,
-    private readonly songQueue: ISongQueue
+    private readonly songQueue: ISongQueue,
+    private readonly chat: IChat
   ) {
     this.audioPlayer.handleStatusChange(AudioPlayerStatus.Idle, async () => {
       await this.checkQueue();
@@ -34,6 +29,12 @@ export class MusicService {
     return song;
   }
 
+  async skip() {
+    await this.pause();
+    await this.checkQueue();
+    await this.resume();
+  }
+
   async pause() {
     return this.audioPlayer.pause();
   }
@@ -42,21 +43,11 @@ export class MusicService {
     this.audioPlayer.resume();
   }
 
-  async skip() {
-    if (this.audioPlayer.status() !== AudioPlayerStatus.Playing) {
-      throw new NoMusicError("No song is currently being played.");
-    }
-    await this.pause();
-    await this.checkQueue();
-    await this.resume();
-  }
-
   async getQueue() {
     return await this.songQueue.getQueue();
   }
 
   async setup() {
-    this.audioPlayer.ensureVoiceChatConnection();
     if (!this.audioPlayer.isPlaying()) {
       await this.checkQueue();
     }
@@ -75,11 +66,9 @@ export class MusicService {
    * @private
    */
   private async checkQueue() {
-    const connection = this.discord.getVoiceChatConnection();
     const queueLength = await this.songQueue.count();
-
     if (queueLength === 0) {
-      return connection.disconnect();
+      return this.audioPlayer.stop();
     }
 
     try {

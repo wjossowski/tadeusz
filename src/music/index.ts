@@ -2,7 +2,8 @@ import { MusicService } from "./app/music.service";
 import {
   discordChat,
   discordConnection,
-} from "../common/infrastructure/providers/discord";
+  slashCommandRegistry,
+} from "@common/infrastructure/providers/discord";
 import { MongoSongQueue } from "./infrastructure/repositories/mongo/mongo-song-queue";
 import { DiscordAudioPlayer } from "./infrastructure/providers/discord/audio-player/discord-audio-player";
 import { createAudioPlayer } from "@discordjs/voice";
@@ -13,11 +14,11 @@ import { PlayCommand } from "./infrastructure/providers/discord/slash-commands/p
 import { ResumeCommand } from "./infrastructure/providers/discord/slash-commands/resume.command";
 import { SkipCommand } from "./infrastructure/providers/discord/slash-commands/skip.command";
 import { YoutubeStreamingService } from "./infrastructure/providers/youtube-dl/youtube.service";
-import { SlashCommandRegistry } from "@common/infrastructure/providers/discord/slash-commands/slash-commands.registry";
 import { ISongQueue } from "./app/ports/song-queue";
 import { IAudioPlayer } from "./app/ports/audio-player";
 import { IStreamingSource } from "./app/ports/streaming-source";
 import { IAudioAPI } from "./app/ports/audio-api";
+import { DiscordAudioConnection } from "./infrastructure/providers/discord/audio-player/discord-audio-connection";
 
 export class MusicModule {
   constructor(
@@ -26,30 +27,34 @@ export class MusicModule {
     private readonly queue: ISongQueue
   ) {}
 
-  public readonly musicPlayerService = new MusicService(
+  public readonly service = new MusicService(
     this.streamingSource,
-    discordConnection,
-    discordChat,
     this.discordAudioPlayer,
-    this.queue
+    this.queue,
+    discordChat
   );
 
-  public setup(slashCommandRepository: SlashCommandRegistry) {
-    slashCommandRepository.add([
-      new PlayCommand(this.musicPlayerService, discordChat),
-      new PauseCommand(this.musicPlayerService, discordChat),
-      new ResumeCommand(this.musicPlayerService, discordChat),
-      new SkipCommand(this.musicPlayerService, discordChat),
-      new GetMusicQueueCommand(this.musicPlayerService, discordChat),
-      new JoinVoiceCommand(this.musicPlayerService),
+  public setup() {
+    slashCommandRegistry.add([
+      new PlayCommand(this.service, discordChat),
+      new PauseCommand(this.service, discordChat),
+      new ResumeCommand(this.service, discordChat),
+      new SkipCommand(this.service, discordChat),
+      new GetMusicQueueCommand(this.service, discordChat),
+      new JoinVoiceCommand(this.service),
     ]);
 
     return this;
   }
 }
 
-export const Music = new MusicModule(
-  new DiscordAudioPlayer(discordConnection, createAudioPlayer() as IAudioAPI),
+const audioApi = createAudioPlayer() as IAudioAPI;
+
+export const music = new MusicModule(
+  new DiscordAudioPlayer(
+    new DiscordAudioConnection(discordConnection, audioApi),
+    audioApi
+  ),
   new YoutubeStreamingService(),
   new MongoSongQueue()
-);
+).setup();
